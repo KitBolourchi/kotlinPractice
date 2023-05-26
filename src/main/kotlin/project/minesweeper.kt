@@ -16,12 +16,14 @@ fun main() {
 		print("Give a row: ")
 		val row = readln().toInt()
 
+		if (filledOutBoard[col][row] == "X ") {
+			println("Game Over")
+			game = false
+		}
+
 		floodFill(playingBoard, filledOutBoard, col, row)
 
 	}
-
-
-
 }
 
 fun createFilledBoard(): MutableList<MutableList<String>> {
