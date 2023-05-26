@@ -1,21 +1,43 @@
 package project
 
 fun main() {
-	val m = createBoard()
-	addMinesToBoard(m,15)
-	checkNeighbours(m)
+	val filledOutBoard = createFilledBoard()
+	val playingBoard = createPlayingBoard()
 
+	addMinesToBoard(filledOutBoard,15)
+	checkNeighbours(filledOutBoard)
 
-	for (i in 0 until m.size) {
-		for (j in 0 until m[i].size) {
-			print(m[i][j])
-		}
-		println()
+	var game = true
+	while (game) {
+		printBoard(filledOutBoard)
+		printBoard(playingBoard)
+		print("Give a col: ")
+		val col = readln().toInt()
+		print("Give a row: ")
+		val row = readln().toInt()
+
+		floodFill(playingBoard, filledOutBoard, col, row)
+
 	}
+
+
+
 }
 
-fun createBoard(): MutableList<MutableList<String>> {
-	val board = MutableList(11) { MutableList(21) {". "}}
+fun createFilledBoard(): MutableList<MutableList<String>> {
+	val board = MutableList(12) { MutableList(22) {". "}}
+	for (i in 0 until board.size) {
+		for (j in 0 until board[i].size) {
+			if (i == 0 || i == 11 || j == 0 || j == 21) {
+				board[i][j] = ""
+			}
+		}
+	}
+	return board
+}
+
+fun createPlayingBoard(): MutableList<MutableList<String>> {
+	val board = MutableList(11) { MutableList(21) {"+ "}}
 	for (i in 0 until board.size) {
 		for (j in 0 until board[i].size) {
 			if (i == 0 || i == 11 || j == 0 || j == 21) {
@@ -54,6 +76,59 @@ fun checkNeighbours(board : MutableList<MutableList<String>>) {
 			}
 			if (numberOfLocalMines > 0) board[i][j] = "$numberOfLocalMines "
 		}
+	}
+}
+
+fun printBoard(board: MutableList<MutableList<String>>) {
+	for (i in 0 until board.size) {
+		for (j in 0 until board[i].size) {
+			print(board[i][j])
+		}
+		println()
+	}
+}
+
+fun floodFill(playingBoard:  MutableList<MutableList<String>>, filledBoard: MutableList<MutableList<String>>, col: Int, row: Int) {
+	val numberCheck = arrayOf("1 ", "2 ", "3 ", "4 ", "5 ", "6 ", "7 ", "8 ")
+	val colQueue = mutableListOf<Int>()
+	val rowQueue = mutableListOf<Int>()
+	colQueue.add(col)
+	rowQueue.add(row)
+	while (colQueue.size > 0 && rowQueue.size > 0) {
+		val tempCol = colQueue[0]
+		val tempRow = rowQueue[0]
+		colQueue.removeAt(0)
+		rowQueue.removeAt(0)
+		if (filledBoard[tempCol][tempRow] == ". " && playingBoard[tempCol][tempRow] != ". ") {
+			playingBoard[tempCol][tempRow] = ". "
+
+			colQueue.add(tempCol)
+			rowQueue.add(tempRow+1)
+
+			colQueue.add(tempCol+1)
+			rowQueue.add(tempRow+1)
+
+			colQueue.add(tempCol+1)
+			rowQueue.add(tempRow)
+
+			colQueue.add(tempCol+1)
+			rowQueue.add(tempRow-1)
+
+			colQueue.add(tempCol)
+			rowQueue.add(tempRow-1)
+
+			colQueue.add(tempCol-1)
+			rowQueue.add(tempRow-1)
+
+			colQueue.add(tempCol-1)
+			rowQueue.add(tempRow)
+
+			colQueue.add(tempCol-1)
+			rowQueue.add(tempRow+1)
+		} else if (numberCheck.contains(filledBoard[tempCol][tempRow])) {
+			playingBoard[tempCol][tempRow] = filledBoard[tempCol][tempRow]
+		}
+
 	}
 
 }
