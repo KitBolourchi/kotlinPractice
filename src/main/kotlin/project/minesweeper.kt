@@ -123,6 +123,7 @@ fun floodFill(playingBoard:  MutableList<MutableList<String>>, filledBoard: Muta
 			rowQueue.add(tempRow-1)
 
 			colQueue.add(tempCol-1)
+			
 			rowQueue.add(tempRow)
 
 			colQueue.add(tempCol-1)
